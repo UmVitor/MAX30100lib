@@ -54,15 +54,15 @@ void Interceptor::SetSignalAmp(float irACValue, float redACValue, uint16_t flagI
                               RedACValue2,
                               internBeatDetected);
         
-        Serial.print(IrACValue1);
-        Serial.print(" - ");
-        Serial.print(RedACValue1);
-        Serial.print(" - ");
-        Serial.print(IrACValue2);
-        Serial.print(" - ");
-        Serial.print(RedACValue2);
-        Serial.print(" - ");
-        Serial.println(internBeatDetected);
+        // Serial.print(IrACValue1);
+        // Serial.print(" - ");
+        // Serial.print(RedACValue1);
+        // Serial.print(" - ");
+        // Serial.print(IrACValue2);
+        // Serial.print(" - ");
+        // Serial.print(RedACValue2);
+        // Serial.print(" - ");
+        // Serial.println(internBeatDetected);
     }
 }
 
