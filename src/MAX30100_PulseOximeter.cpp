@@ -251,6 +251,7 @@ void PulseOximeter::checkSampleAmp(uint16_t flagInterceptor, Interceptor &interc
         // The signal fed to the beat detector is mirrored since the cleanest monotonic spike is below zero
         float filteredPulseValue = lpf.step(-irACValue);
         internBeatDetected = beatDetector.addSample(filteredPulseValue);
+        Serial.println(internBeatDetected);
 
         if (beatDetector.getRate() > 0)
         {

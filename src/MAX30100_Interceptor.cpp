@@ -23,6 +23,16 @@ void Interceptor::SetSignal(float irACValue, float redACValue, uint16_t flagInte
                               IrACValue2,
                               RedACValue2,
                               internBeatDetected);
+
+        Serial.print(IrACValue1);
+        Serial.print(" - ");
+        Serial.print(RedACValue1);
+        Serial.print(" - "); 
+        Serial.print(IrACValue2);
+        Serial.print(" - ");
+        Serial.print(RedACValue2);
+        Serial.print(" - ");
+        Serial.println("internBeatDetected");
     }
     
 }
@@ -43,6 +53,16 @@ void Interceptor::SetSignalAmp(float irACValue, float redACValue, uint16_t flagI
                               IrACValue2,
                               RedACValue2,
                               internBeatDetected);
+        
+        Serial.print(IrACValue1);
+        Serial.print(" - ");
+        Serial.print(RedACValue1);
+        Serial.print(" - ");
+        Serial.print(IrACValue2);
+        Serial.print(" - ");
+        Serial.print(RedACValue2);
+        Serial.print(" - ");
+        Serial.println(internBeatDetected);
     }
 }
 
@@ -52,6 +72,7 @@ void Interceptor::Reset(){
 
 uint8_t Interceptor::GetSpO2()
 {
+
     return spO2calculator.getSpO2();
 }
 
