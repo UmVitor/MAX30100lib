@@ -35,8 +35,11 @@ public:
                                    float irACValue2, float redACValue2,
                                    bool beatDetected);
     uint8_t getSpO2();
+    uint8_t getSpO2Amp();
     float irACValueSqSum;
     float redACValueSqSum;
+    float irACValueSqSumAmp;
+    float redACValueSqSumAmp;
     float mixedIrACValueSqSum;
     float mixedRedACValueSqSum;       
     void resetVector();
@@ -48,7 +51,10 @@ private:
 
     uint8_t beatsDetectedNum;
     uint32_t samplesRecorded;
+    uint8_t beatsDetectedNumAmp;
+    uint32_t samplesRecordedAmp;
     uint8_t spO2;
+    uint8_t spO2Amp;
 };
 
 #endif
