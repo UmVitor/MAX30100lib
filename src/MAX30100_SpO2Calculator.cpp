@@ -64,8 +64,8 @@ void SpO2Calculator::update(float irACValue, float redACValue, bool beatDetected
             reset();
 
             spO2 = spO2LUT[index];
-            Serial.print("Inside Update: ");
-            Serial.println(spO2);
+            // Serial.print("Inside Update: ");
+            // Serial.println(spO2);
         }
     }
 }
@@ -97,14 +97,14 @@ void SpO2Calculator::updateAmp(float irACValue1,
         ++beatsDetectedNumAmp;
         if (beatsDetectedNumAmp == CALCULATE_EVERY_N_BEATS)
         {
-            Serial.print(redACValueSqSumAmp);
-            Serial.print(" ");
-            Serial.print(irACValueSqSumAmp);
-            Serial.print(" ");
-            Serial.print(samplesRecordedAmp);
-            Serial.print(" ");
+            // Serial.print(redACValueSqSumAmp);
+            // Serial.print(" ");
+            // Serial.print(irACValueSqSumAmp);
+            // Serial.print(" ");
+            // Serial.print(samplesRecordedAmp);
+            // Serial.print(" ");
             float acSqRatio = 100.0 * log(redACValueSqSumAmp / samplesRecordedAmp) / log(irACValueSqSumAmp / samplesRecordedAmp);
-            Serial.print(acSqRatio);
+            // Serial.print(acSqRatio);
             uint8_t index = 0;
 
             if (acSqRatio > 66)
@@ -118,10 +118,10 @@ void SpO2Calculator::updateAmp(float irACValue1,
             reset();
 
             spO2Amp = spO2LUT[index];
-            Serial.print(" ");
-            Serial.print(index);
-            Serial.print(" ");
-            Serial.println(spO2Amp);
+            // Serial.print(" ");
+            // Serial.print(index);
+            // Serial.print(" ");
+            // Serial.println(spO2Amp);
         }
     }
 }
