@@ -251,13 +251,19 @@ void PulseOximeter::checkSampleAmp(uint16_t flagInterceptor, Interceptor &interc
         // The signal fed to the beat detector is mirrored since the cleanest monotonic spike is below zero
         float filteredPulseValue = lpf.step(-irACValue);
         internBeatDetected = beatDetector.addSample(filteredPulseValue);
-        Serial.println(internBeatDetected);
+        // Serial.println(internBeatDetected);
 
         if (beatDetector.getRate() > 0)
         {
             state = PULSEOXIMETER_STATE_DETECTING;
             interceptor.SetSignalAmp(irACValue, redACValue, flagInterceptor, internBeatDetected);
-            // Serial.println("checkSample");
+            // Serial.print(irACValue);
+            // Serial.print(" - ");
+            // Serial.print(redACValue);
+            // Serial.print(" - ");
+            // Serial.print(flagInterceptor);
+            // Serial.print(" - ");
+            // Serial.println(internBeatDetected);
             // spO2calculator.update(irACValue, redACValue, internBeatDetected);
         }
         else if (state == PULSEOXIMETER_STATE_DETECTING)
