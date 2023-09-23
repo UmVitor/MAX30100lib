@@ -33,7 +33,7 @@ bool MAX30100::begin()
         return false;
     }
 
-    setMode(DEFAULT_MODE);
+    setMode(MAX30100_MODE_SPO2_HR);
     setLedsPulseWidth(DEFAULT_PULSE_WIDTH);
     setSamplingRate(DEFAULT_SAMPLING_RATE);
     setLedsCurrent(DEFAULT_IR_LED_CURRENT, DEFAULT_RED_LED_CURRENT);

@@ -34,7 +34,9 @@ SpO2Calculator::SpO2Calculator() : irACValueSqSum(0),
                                    spO2(0),
                                    spO2Amp(0),
                                    mixedIrACValueSqSum(0),
-                                   mixedRedACValueSqSum(0)
+                                   mixedRedACValueSqSum(0),
+                                   diffSignalIr(0),
+                                   diffSignalRed(0)
 
 {
 }
@@ -87,10 +89,10 @@ void SpO2Calculator::updateAmp(float irACValue1,
     // Serial.print(" ");
     // Serial.println(beatDetected);
 
-    float differenceSignalIr = instrumentationAmplifier(irACValue1, irACValue2);
-    float differenceSignalRed = instrumentationAmplifier(redACValue1, redACValue2);
-    irACValueSqSumAmp += differenceSignalIr * differenceSignalIr;
-    redACValueSqSumAmp += differenceSignalRed * differenceSignalRed;
+    diffSignalIr = instrumentationAmplifierModel(irACValue1, irACValue2);
+    diffSignalRed = instrumentationAmplifierModel(redACValue1, redACValue2);
+    irACValueSqSumAmp += diffSignalIr * diffSignalIr;
+    redACValueSqSumAmp += diffSignalRed * diffSignalRed;
     ++samplesRecordedAmp;
     if (beatDetected)
     {
@@ -140,6 +142,8 @@ void SpO2Calculator::reset()
     spO2Amp = 0;
     mixedIrACValueSqSum = 0;
     mixedRedACValueSqSum = 0;
+    diffSignalIr = 0;
+    diffSignalRed = 0;
 }
 
 uint8_t SpO2Calculator::getSpO2()
@@ -152,7 +156,17 @@ uint8_t SpO2Calculator::getSpO2Amp()
     return spO2Amp;
 }
 
-float SpO2Calculator::instrumentationAmplifier(float signal1, float signal2)
+float SpO2Calculator::getMixedSignalDiffIr()
+{
+    return diffSignalIr;
+}
+
+float SpO2Calculator::getMixedSignalDiffRed()
+{
+    return diffSignalRed;
+}
+
+float SpO2Calculator::instrumentationAmplifierModel(float signal1, float signal2)
 {
     float R1 = 10e3;
     float R2 = 10e3;

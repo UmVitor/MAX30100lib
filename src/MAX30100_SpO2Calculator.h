@@ -41,10 +41,14 @@ public:
     float irACValueSqSumAmp;
     float redACValueSqSumAmp;
     float mixedIrACValueSqSum;
-    float mixedRedACValueSqSum;       
+    float mixedRedACValueSqSum;
+    float diffSignalIr;
+    float diffSignalRed; 
+    float getMixedSignalDiffRed();
+    float getMixedSignalDiffIr();     
     void resetVector();
     void sumAllVectors();
-    float instrumentationAmplifier(float signal1, float signal2);
+    float instrumentationAmplifierModel(float signal1, float signal2);
 
 private: 
     static const uint8_t spO2LUT[43];
