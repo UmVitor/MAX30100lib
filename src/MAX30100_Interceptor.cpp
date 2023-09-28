@@ -85,3 +85,10 @@ void Interceptor::GetAllValues(){
     Serial.print(" ");
     Serial.println(RedACValue2);
 }
+
+float Interceptor::GlimpseSignal(){
+    float irMixed = spO2calculator.instrumentationAmplifier(IrACValue1, IrACValue2);
+    float redMixed = spO2calculator.instrumentationAmplifier(RedACValue1, RedACValue2);
+
+    return irMixed;
+}

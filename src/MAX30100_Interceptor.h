@@ -17,6 +17,7 @@ public:
     float IrACValue2;
     float RedACValue2;
     void GetAllValues();
+    float GlimpseSignal();
 
 private:
     SpO2Calculator spO2calculator;
