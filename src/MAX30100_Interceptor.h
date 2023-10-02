@@ -16,6 +16,8 @@ public:
     float RedACValue1;
     float IrACValue2;
     float RedACValue2;
+    float RedACValueMixed;
+    float IrACValueMixed;
     void GetAllValues();
     float GlimpseSignal();
 
