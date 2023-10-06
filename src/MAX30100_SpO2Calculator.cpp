@@ -50,7 +50,7 @@ void SpO2Calculator::update(float irACValue, float redACValue, bool beatDetected
         ++beatsDetectedNum;
         if (beatsDetectedNum == CALCULATE_EVERY_N_BEATS)
         {
-            float acSqRatio = 100.0 * log(redACValueSqSum / samplesRecorded) / log(irACValueSqSum / samplesRecorded);
+            float acSqRatio = 100.0 * log(sqrt(redACValueSqSum / samplesRecorded)) / log(sqrt(irACValueSqSum / samplesRecorded));
             uint8_t index = 0;
 
             if (acSqRatio > 66)
