@@ -31,7 +31,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "MAX30100_BeatDetector.h"
 #include "MAX30100_Filters.h"
 #include "MAX30100_SpO2Calculator.h"
-#include "MAX30100_Interceptor.h"
 
 typedef enum PulseOximeterState {
     PULSEOXIMETER_STATE_INIT,
@@ -52,8 +51,6 @@ public:
     PulseOximeter();
 
     bool begin(PulseOximeterDebuggingMode debuggingMode_=PULSEOXIMETER_DEBUGGINGMODE_NONE);
-    void update(uint16_t flagInterceptor, Interceptor &interceptor);
-    void updateAmp(uint16_t flagInterceptor, Interceptor &interceptor);
     void update();
     float getHeartRate();
     uint8_t getSpO2();
@@ -62,15 +59,9 @@ public:
     void setIRLedCurrent(LEDCurrent irLedCurrent);
     void shutdown();
     void resume();
-    bool getRawValues(uint16_t *ir, uint16_t *red);
-    uint16_t IrRawValue = 0.f;
-    uint16_t RedRawValue = 0.f;
-    bool internBeatDetected;
 
 private:
     void checkSample();
-    void checkSample(uint16_t flagInterceptor, Interceptor & interceptor);
-    void checkSampleAmp(uint16_t flagInterceptor, Interceptor &interceptor);
     void checkCurrentBias();
 
     PulseOximeterState state;

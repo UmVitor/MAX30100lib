@@ -114,5 +114,5 @@ private:
 	uint16_t count;
 };
 
-#include <C:\Users\vitto\Documents\TCC\MAX30100lib\src\CircularBuffer.tpp>
+#include "CircularBuffer.tpp"
 #endif

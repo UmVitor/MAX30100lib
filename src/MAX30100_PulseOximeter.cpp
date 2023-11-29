@@ -29,8 +29,7 @@ PulseOximeter::PulseOximeter() :
     tsLastCurrentAdjustment(0),
     redLedCurrentIndex((uint8_t)RED_LED_CURRENT_START),
     irLedCurrent(DEFAULT_IR_LED_CURRENT),
-    onBeatDetected(NULL),
-    internBeatDetected(false)
+    onBeatDetected(NULL)
 {
 }
 
@@ -63,22 +62,6 @@ void PulseOximeter::update()
     hrm.update();
 
     checkSample();
-    checkCurrentBias();
-}
-
-void PulseOximeter::update(uint16_t flagInterceptor, Interceptor & interceptor)
-{
-    hrm.update();
-
-    checkSample(flagInterceptor, interceptor);
-    checkCurrentBias();
-}
-
-void PulseOximeter::updateAmp(uint16_t flagInterceptor, Interceptor &interceptor)
-{
-    hrm.update();
-
-    checkSampleAmp(flagInterceptor, interceptor);
     checkCurrentBias();
 }
 
@@ -123,94 +106,28 @@ void PulseOximeter::checkSample()
     uint16_t rawIRValue, rawRedValue;
 
     // Dequeue all available samples, they're properly timed by the HRM
-    while (hrm.getRawValues(&rawIRValue, &rawRedValue))
-    {
-        float irACValue = irDCRemover.step(rawIRValue);
-        float redACValue = redDCRemover.step(rawRedValue);
-
-        // The signal fed to the beat detector is mirrored since the cleanest monotonic spike is below zero
-        float filteredPulseValue = lpf.step(-irACValue);
-        internBeatDetected = beatDetector.addSample(filteredPulseValue);
-
-        if (beatDetector.getRate() > 0)
-        {
-            state = PULSEOXIMETER_STATE_DETECTING;
-            spO2calculator.update(irACValue, redACValue, internBeatDetected);
-        }
-        else if (state == PULSEOXIMETER_STATE_DETECTING)
-        {
-            state = PULSEOXIMETER_STATE_IDLE;
-            spO2calculator.reset();
-        }
-
-        switch (debuggingMode)
-        {
-        case PULSEOXIMETER_DEBUGGINGMODE_RAW_VALUES:
-            // Serial.print("R:");
-            // Serial.print(rawIRValue);
-            // Serial.print(",");
-            // Serial.println(rawRedValue);
-            IrRawValue = rawIRValue;
-            RedRawValue = rawRedValue;
-            break;
-
-        case PULSEOXIMETER_DEBUGGINGMODE_AC_VALUES:
-            Serial.print("R:");
-            Serial.print(irACValue);
-            Serial.print(",");
-            Serial.println(redACValue);
-            break;
-
-        case PULSEOXIMETER_DEBUGGINGMODE_PULSEDETECT:
-            Serial.print("R:");
-            Serial.print(filteredPulseValue);
-            Serial.print(",");
-            Serial.println(beatDetector.getCurrentThreshold());
-            break;
-
-        default:
-            break;
-        }
-
-        if (internBeatDetected && onBeatDetected)
-        {
-            onBeatDetected();
-            internBeatDetected = false;
-        }
-    }
-}
-
-void PulseOximeter::checkSample(uint16_t flagInterceptor, Interceptor & interceptor)
-{
-    uint16_t rawIRValue, rawRedValue;
-
-    // Dequeue all available samples, they're properly timed by the HRM
     while (hrm.getRawValues(&rawIRValue, &rawRedValue)) {
         float irACValue = irDCRemover.step(rawIRValue);
         float redACValue = redDCRemover.step(rawRedValue);
 
         // The signal fed to the beat detector is mirrored since the cleanest monotonic spike is below zero
         float filteredPulseValue = lpf.step(-irACValue);
-        internBeatDetected = beatDetector.addSample(filteredPulseValue);
+        bool beatDetected = beatDetector.addSample(filteredPulseValue);
 
         if (beatDetector.getRate() > 0) {
             state = PULSEOXIMETER_STATE_DETECTING;
-            interceptor.SetSignal(irACValue, redACValue, flagInterceptor, internBeatDetected);
-            //Serial.println("checkSample");
-            //spO2calculator.update(irACValue, redACValue, internBeatDetected);
+            spO2calculator.update(irACValue, redACValue, beatDetected);
         } else if (state == PULSEOXIMETER_STATE_DETECTING) {
             state = PULSEOXIMETER_STATE_IDLE;
-            interceptor.Reset();
+            spO2calculator.reset();
         }
 
         switch (debuggingMode) {
             case PULSEOXIMETER_DEBUGGINGMODE_RAW_VALUES:
-                //Serial.print("R:");
-                //Serial.print(rawIRValue);
-                //Serial.print(",");
-                //Serial.println(rawRedValue);
-                IrRawValue = rawIRValue;
-                RedRawValue = rawRedValue;
+                Serial.print("R:");
+                Serial.print(rawIRValue);
+                Serial.print(",");
+                Serial.println(rawRedValue);
                 break;
 
             case PULSEOXIMETER_DEBUGGINGMODE_AC_VALUES:
@@ -231,80 +148,8 @@ void PulseOximeter::checkSample(uint16_t flagInterceptor, Interceptor & intercep
                 break;
         }
 
-        if (internBeatDetected && onBeatDetected) {
+        if (beatDetected && onBeatDetected) {
             onBeatDetected();
-            internBeatDetected = false;
-        }
-    }
-}
-
-void PulseOximeter::checkSampleAmp(uint16_t flagInterceptor, Interceptor &interceptor)
-{
-    uint16_t rawIRValue, rawRedValue;
-
-    // Dequeue all available samples, they're properly timed by the HRM
-    while (hrm.getRawValues(&rawIRValue, &rawRedValue))
-    {
-        float irACValue = irDCRemover.step(rawIRValue);
-        float redACValue = redDCRemover.step(rawRedValue);
-
-        // The signal fed to the beat detector is mirrored since the cleanest monotonic spike is below zero
-        float filteredPulseValue = lpf.step(-irACValue);
-        internBeatDetected = beatDetector.addSample(filteredPulseValue);
-        // Serial.println(internBeatDetected);
-
-        if (beatDetector.getRate() > 0)
-        {
-            state = PULSEOXIMETER_STATE_DETECTING;
-            interceptor.SetSignalAmp(irACValue, redACValue, flagInterceptor, internBeatDetected);
-            // Serial.print(irACValue);
-            // Serial.print(" - ");
-            // Serial.print(redACValue);
-            // Serial.print(" - ");
-            // Serial.print(flagInterceptor);
-            // Serial.print(" - ");
-            // Serial.println(internBeatDetected);
-            // spO2calculator.update(irACValue, redACValue, internBeatDetected);
-        }
-        else if (state == PULSEOXIMETER_STATE_DETECTING)
-        {
-            state = PULSEOXIMETER_STATE_IDLE;
-            interceptor.Reset();
-        }
-
-        switch (debuggingMode)
-        {
-        case PULSEOXIMETER_DEBUGGINGMODE_RAW_VALUES:
-            // Serial.print("R:");
-            // Serial.print(rawIRValue);
-            // Serial.print(",");
-            // Serial.println(rawRedValue);
-            IrRawValue = rawIRValue;
-            RedRawValue = rawRedValue;
-            break;
-
-        case PULSEOXIMETER_DEBUGGINGMODE_AC_VALUES:
-            Serial.print("R:");
-            Serial.print(irACValue);
-            Serial.print(",");
-            Serial.println(redACValue);
-            break;
-
-        case PULSEOXIMETER_DEBUGGINGMODE_PULSEDETECT:
-            Serial.print("R:");
-            Serial.print(filteredPulseValue);
-            Serial.print(",");
-            Serial.println(beatDetector.getCurrentThreshold());
-            break;
-
-        default:
-            break;
-        }
-
-        if (internBeatDetected && onBeatDetected)
-        {
-            onBeatDetected();
-            internBeatDetected = false;
         }
     }
 }

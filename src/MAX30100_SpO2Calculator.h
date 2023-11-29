@@ -22,39 +22,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdint.h>
 
 #define CALCULATE_EVERY_N_BEATS         3
-#define NUMBER_SAMPLES 10
+
 class SpO2Calculator {
 public:
     SpO2Calculator();
-    void update(float irACValue, float redACValue, 
-                float irACValue2, float redACValue2, 
-                bool beatDetected);
+
     void update(float irACValue, float redACValue, bool beatDetected);
     void reset();
-    void updateAmp(float irACValue1, float redACValue1,
-                                   float irACValue2, float redACValue2,
-                                   bool beatDetected);
     uint8_t getSpO2();
-    uint8_t getSpO2Amp();
-    float irACValueSqSum;
-    float redACValueSqSum;
-    float irACValueSqSumAmp;
-    float redACValueSqSumAmp;
-    float mixedIrACValueSqSum;
-    float mixedRedACValueSqSum;       
-    void resetVector();
-    void sumAllVectors();
-    float instrumentationAmplifier(float signal1, float signal2);
 
-private: 
+private:
     static const uint8_t spO2LUT[43];
 
+    float irACValueSqSum;
+    float redACValueSqSum;
     uint8_t beatsDetectedNum;
     uint32_t samplesRecorded;
-    uint8_t beatsDetectedNumAmp;
-    uint32_t samplesRecordedAmp;
     uint8_t spO2;
-    uint8_t spO2Amp;
 };
 
 #endif
